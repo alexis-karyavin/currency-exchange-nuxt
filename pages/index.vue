@@ -1,25 +1,34 @@
 <template lang="pug"> 
   div.content
     h1.title Crypto Exchange
-
+   
     div.container-cards
       Card
         template(v-slot:header) Exchange EUR to USD
         div.form-group
-          label You pay
-          input(type="text")
-        div.container-button-reverse  
-          button.btn-reverse
+          label You pay {{ currentBaseCurrency }}
+          Input(
+            :currentCurrency="currentBaseCurrency"
+            :currencies="baseCurrencies"
+            @change-current-currency="setCurrentBaseCurrency"
+          )
+        div.container-button-reverse
+          button.btn-reverse(@click="reverseCurrency")
             img.image-arrow(:src="imgArrow")
-        div.form-group
-          label You get
-          input(type="text")
+        div.form-group(v-if="quoteCurrencies.length")
+          label You get {{ currentQuoteCurrency }}
+          Input(
+            :currentCurrency="currentQuoteCurrency"
+            :currencies="quoteCurrencies"
+            @change-current-currency="setQuoteBaseCurrency"
+          )
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 import TheNavBar from '@/components/TheNavBar.vue'
 import Card from '@/components/Card.vue'
+import Input from '@/components/Input.vue'
 
 import imgArrow from '@/assets/icons/arrows-couple.png'
 
@@ -28,6 +37,7 @@ export default {
   components: {
     TheNavBar,
     Card,
+    Input,
   },
   data() {
     return {
@@ -35,13 +45,23 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currencyPairs', 'exchangeRates']),
+    ...mapState([
+      'currencyPairs',
+      'exchangeRates',
+      'currentBaseCurrency',
+      'currentQuoteCurrency',
+    ]),
+    ...mapGetters({
+      baseCurrencies: 'getBaseCurrencies',
+      quoteCurrencies: 'getQuoteCurrencies',
+    }),
   },
   created() {
     this.initCurrencyExchange()
   },
   methods: {
-    ...mapActions(['initCurrencyExchange']),
+    ...mapActions(['initCurrencyExchange', 'reverseCurrency']),
+    ...mapMutations(['setCurrentBaseCurrency', 'setQuoteBaseCurrency']),
   },
 }
 </script>
