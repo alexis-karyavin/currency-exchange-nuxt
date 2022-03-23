@@ -9,7 +9,8 @@
           label You pay
           input(type="text")
         div.container-button-reverse  
-          button.btn-reverse aaa
+          button.btn-reverse
+            img.image-arrow(:src="imgArrow")
         div.form-group
           label You get
           input(type="text")
@@ -20,11 +21,18 @@ import { mapState, mapActions } from 'vuex'
 import TheNavBar from '@/components/TheNavBar.vue'
 import Card from '@/components/Card.vue'
 
+import imgArrow from '@/assets/icons/arrows-couple.png'
+
 export default {
   name: 'IndexPage',
   components: {
     TheNavBar,
     Card,
+  },
+  data() {
+    return {
+      imgArrow,
+    }
   },
   computed: {
     ...mapState(['currencyPairs', 'exchangeRates']),
@@ -63,6 +71,10 @@ export default {
       width: 50px;
       height: 50px;
       margin-top: 1rem;
+
+      .image-arrow {
+        transform: rotate(90deg);
+      }
     }
   }
 }
