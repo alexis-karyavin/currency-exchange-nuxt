@@ -11,7 +11,7 @@
             :currentCurrency="currentBaseCurrency"
             :currencies="baseCurrencies"
             :value="valueBaseCurrency"
-            @change-current-currency="setCurrentBaseCurrency"
+            @change-current-currency="changeBaseCurrencies"
             @set-value="calculateBaseCurrencies"
           )
         div.container-button-reverse
@@ -23,7 +23,7 @@
             :currentCurrency="currentQuoteCurrency"
             :currencies="quoteCurrencies"
             :value="valueQuoteCurrency"
-            @change-current-currency="setQuoteBaseCurrency"
+            @change-current-currency="changeQuoteCurrencies"
             @set-value="calculateQuoteCurrencies"
           )
 </template>
@@ -71,13 +71,10 @@ export default {
       'reverseCurrency',
       'calculateBaseCurrencies',
       'calculateQuoteCurrencies',
+      'changeBaseCurrencies',
+      'changeQuoteCurrencies',
     ]),
-    ...mapMutations([
-      'setCurrentBaseCurrency',
-      'setQuoteBaseCurrency',
-      'setValueQuoteCurrency',
-      'setValueBaseCurrency',
-    ]),
+    ...mapMutations(['setValueQuoteCurrency', 'setValueBaseCurrency']),
   },
 }
 </script>

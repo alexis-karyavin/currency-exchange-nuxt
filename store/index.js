@@ -42,22 +42,39 @@ export const actions = {
   reverseCurrency({ state, commit, dispatch }) {
     const tmp = state.currentBaseCurrency
     commit('setCurrentBaseCurrency', state.currentQuoteCurrency)
-    commit('setQuoteBaseCurrency', tmp)
+    commit('setCurrentQuoteCurrency', tmp)
 
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
   calculateBaseCurrencies({ commit, getters }, value) {
     const valueQuoteCurrency =
-      +value * getters.getCurrentExchangeRate.rate || ''
+      +value * getters.getCurrentExchangeRate?.rate || ''
 
     commit('setValueBaseCurrency', value)
     commit('setValueQuoteCurrency', valueQuoteCurrency.toString())
   },
   calculateQuoteCurrencies({ commit, getters }, value) {
-    const valueBaseCurrency = +value / getters.getCurrentExchangeRate.rate || ''
+    const valueBaseCurrency =
+      +value / getters.getCurrentExchangeRate?.rate || ''
 
     commit('setValueQuoteCurrency', value)
     commit('setValueBaseCurrency', valueBaseCurrency.toString())
+  },
+  changeBaseCurrencies({ state, commit, dispatch }, value) {
+    if (value === state.currentQuoteCurrency) {
+      dispatch('reverseCurrency')
+      return
+    }
+    commit('setCurrentBaseCurrency', value)
+    dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
+  },
+  changeQuoteCurrencies({ state, commit, dispatch }, value) {
+    if (value === state.currentBaseCurrency) {
+      dispatch('reverseCurrency')
+      return
+    }
+    commit('setCurrentQuoteCurrency', value)
+    dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
 }
 
@@ -71,7 +88,7 @@ export const mutations = {
   setCurrentBaseCurrency(state, value) {
     state.currentBaseCurrency = value
   },
-  setQuoteBaseCurrency(state, value) {
+  setCurrentQuoteCurrency(state, value) {
     state.currentQuoteCurrency = value
   },
   setValueBaseCurrency(state, value) {
