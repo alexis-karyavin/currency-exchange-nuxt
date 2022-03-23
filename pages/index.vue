@@ -1,14 +1,21 @@
 <template lang="pug">
   div
-    div {{currencyPairs}}
-    div {{ exchangeRates }}
+    TheNavBar
+    div
+      div {{currencyPairs}}
+      div {{ exchangeRates }}
     //- button(type='button' ) increment
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import TheNavBar from '@/components/TheNavBar.vue'
+
 export default {
   name: 'IndexPage',
+  components: {
+    TheNavBar,
+  },
   computed: {
     ...mapState(['currencyPairs', 'exchangeRates']),
   },
