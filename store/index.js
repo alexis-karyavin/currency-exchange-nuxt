@@ -29,6 +29,12 @@ export const getters = {
         rate.pair ===
         `${state.currentBaseCurrency}/${state.currentQuoteCurrency}`
     ),
+  getCurrentCurrencyPairs: (state) =>
+    state.currencyPairs.find(
+      (pair) =>
+        pair.base_currency === state.currentBaseCurrency &&
+        pair.quote_currency === state.currentQuoteCurrency
+    ),
 }
 
 export const actions = {
@@ -47,15 +53,21 @@ export const actions = {
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
   calculateBaseCurrencies({ commit, getters }, value) {
-    const valueQuoteCurrency =
-      +value * getters.getCurrentExchangeRate?.rate || ''
+    let valueQuoteCurrency = +value * getters.getCurrentExchangeRate?.rate
+    valueQuoteCurrency =
+      valueQuoteCurrency -
+        valueQuoteCurrency *
+          (getters.getCurrentCurrencyPairs?.commission / 100) || ''
 
     commit('setValueBaseCurrency', value)
     commit('setValueQuoteCurrency', valueQuoteCurrency.toString())
   },
   calculateQuoteCurrencies({ commit, getters }, value) {
-    const valueBaseCurrency =
-      +value / getters.getCurrentExchangeRate?.rate || ''
+    let valueBaseCurrency = +value / getters.getCurrentExchangeRate?.rate
+    valueBaseCurrency =
+      valueBaseCurrency +
+        valueBaseCurrency *
+          (getters.getCurrentCurrencyPairs?.commission / 100) || ''
 
     commit('setValueQuoteCurrency', value)
     commit('setValueBaseCurrency', valueBaseCurrency.toString())
