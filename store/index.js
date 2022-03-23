@@ -6,9 +6,11 @@ import createExchangeRates from '@/assets/libs/createExchangeRates'
 
 export const state = () => ({
   currencyPairs: [],
-  exchangeRates: null,
+  exchangeRates: [],
   currentBaseCurrency: null,
   currentQuoteCurrency: null,
+  valueBaseCurrency: null,
+  valueQuoteCurrency: null,
 })
 
 export const getters = {
@@ -21,6 +23,12 @@ export const getters = {
     state.currencyPairs
       .filter((item) => item.base_currency === state.currentBaseCurrency)
       .map((item) => item.quote_currency),
+  getCurrentExchangeRate: (state) =>
+    state.exchangeRates.find(
+      (rate) =>
+        rate.pair ===
+        `${state.currentBaseCurrency}/${state.currentQuoteCurrency}`
+    ),
 }
 
 export const actions = {
@@ -31,10 +39,25 @@ export const actions = {
     commit('setPairs', pairs)
     commit('setExchangeRates', exchangeRates)
   },
-  reverseCurrency({ state, commit }) {
+  reverseCurrency({ state, commit, dispatch }) {
     const tmp = state.currentBaseCurrency
     commit('setCurrentBaseCurrency', state.currentQuoteCurrency)
     commit('setQuoteBaseCurrency', tmp)
+
+    dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
+  },
+  calculateBaseCurrencies({ commit, getters }, value) {
+    const valueQuoteCurrency =
+      +value * getters.getCurrentExchangeRate.rate || ''
+
+    commit('setValueBaseCurrency', value)
+    commit('setValueQuoteCurrency', valueQuoteCurrency.toString())
+  },
+  calculateQuoteCurrencies({ commit, getters }, value) {
+    const valueBaseCurrency = +value / getters.getCurrentExchangeRate.rate || ''
+
+    commit('setValueQuoteCurrency', value)
+    commit('setValueBaseCurrency', valueBaseCurrency.toString())
   },
 }
 
@@ -50,5 +73,11 @@ export const mutations = {
   },
   setQuoteBaseCurrency(state, value) {
     state.currentQuoteCurrency = value
+  },
+  setValueBaseCurrency(state, value) {
+    state.valueBaseCurrency = value
+  },
+  setValueQuoteCurrency(state, value) {
+    state.valueQuoteCurrency = value
   },
 }

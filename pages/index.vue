@@ -10,7 +10,9 @@
           Input(
             :currentCurrency="currentBaseCurrency"
             :currencies="baseCurrencies"
+            :value="valueBaseCurrency"
             @change-current-currency="setCurrentBaseCurrency"
+            @set-value="calculateBaseCurrencies"
           )
         div.container-button-reverse
           button.btn-reverse(@click="reverseCurrency")
@@ -20,7 +22,9 @@
           Input(
             :currentCurrency="currentQuoteCurrency"
             :currencies="quoteCurrencies"
+            :value="valueQuoteCurrency"
             @change-current-currency="setQuoteBaseCurrency"
+            @set-value="calculateQuoteCurrencies"
           )
 </template>
 
@@ -50,6 +54,8 @@ export default {
       'exchangeRates',
       'currentBaseCurrency',
       'currentQuoteCurrency',
+      'valueBaseCurrency',
+      'valueQuoteCurrency',
     ]),
     ...mapGetters({
       baseCurrencies: 'getBaseCurrencies',
@@ -60,8 +66,18 @@ export default {
     this.initCurrencyExchange()
   },
   methods: {
-    ...mapActions(['initCurrencyExchange', 'reverseCurrency']),
-    ...mapMutations(['setCurrentBaseCurrency', 'setQuoteBaseCurrency']),
+    ...mapActions([
+      'initCurrencyExchange',
+      'reverseCurrency',
+      'calculateBaseCurrencies',
+      'calculateQuoteCurrencies',
+    ]),
+    ...mapMutations([
+      'setCurrentBaseCurrency',
+      'setQuoteBaseCurrency',
+      'setValueQuoteCurrency',
+      'setValueBaseCurrency',
+    ]),
   },
 }
 </script>
