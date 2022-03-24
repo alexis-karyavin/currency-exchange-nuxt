@@ -4,9 +4,9 @@
    
     div.container-cards
       Card
-        template(v-slot:header) Exchange EUR to USD
+        template(v-slot:header) Exchange {{ currentBaseCurrency }} to {{currentQuoteCurrency}}
         div.form-group
-          label You pay {{ currentBaseCurrency }}
+          label You pay
           Input(
             :currentCurrency="currentBaseCurrency"
             :currencies="baseCurrencies"
@@ -18,7 +18,7 @@
           button.btn-reverse(@click="reverseCurrency")
             img.image-arrow(:src="imgArrow")
         div.form-group(v-if="quoteCurrencies.length")
-          label You get {{ currentQuoteCurrency }}
+          label You get
           Input(
             :currentCurrency="currentQuoteCurrency"
             :currencies="quoteCurrencies"
@@ -26,6 +26,12 @@
             @change-current-currency="changeQuoteCurrencies"
             @set-value="calculateQuoteCurrencies"
           )
+        div.container-btn-exchange
+          button(type="button" @click="exchange" :disabled="isDisabledBtnExchange") Exchange
+
+    Modal(v-if="showModalComplete" @close="closeModalComplete")
+      h3 Complete!
+      
 </template>
 
 <script>
@@ -33,6 +39,7 @@ import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 import TheNavBar from '@/components/TheNavBar.vue'
 import Card from '@/components/Card.vue'
 import Input from '@/components/Input.vue'
+import Modal from '@/components/Modal.vue'
 
 import imgArrow from '@/assets/icons/arrows-couple.png'
 
@@ -42,10 +49,12 @@ export default {
     TheNavBar,
     Card,
     Input,
+    Modal,
   },
   data() {
     return {
       imgArrow,
+      showModalComplete: false,
     }
   },
   computed: {
@@ -61,6 +70,8 @@ export default {
       baseCurrencies: 'getBaseCurrencies',
       quoteCurrencies: 'getQuoteCurrencies',
     }),
+    isDisabledBtnExchange: (vm) =>
+      !vm.valueBaseCurrency && !vm.valueQuoteCurrency,
   },
   created() {
     this.initCurrencyExchange()
@@ -75,6 +86,12 @@ export default {
       'changeQuoteCurrencies',
     ]),
     ...mapMutations(['setValueQuoteCurrency', 'setValueBaseCurrency']),
+    exchange() {
+      this.showModalComplete = true
+    },
+    closeModalComplete() {
+      this.showModalComplete = false
+    },
   },
 }
 </script>
@@ -109,6 +126,9 @@ export default {
         transform: rotate(90deg);
       }
     }
+  }
+  .container-btn-exchange {
+    margin-top: 2rem;
   }
 }
 </style>
