@@ -1,7 +1,5 @@
 <template lang="pug"> 
   div.content
-    h1.title Crypto Exchange
-   
     div.container-cards
       Card
         template(v-slot:header) Exchange {{ currentBaseCurrency }} to {{currentQuoteCurrency}}
@@ -105,10 +103,6 @@ export default {
 <style lang="scss">
 .content {
   padding: 1rem;
-
-  .title {
-    margin-bottom: 2rem;
-  }
 
   .form-group {
     display: flex;
