@@ -3,6 +3,7 @@ import commissions from '@/static/commissions.json'
 
 import createPairs from '@/assets/libs/createPairs'
 import createExchangeRates from '@/assets/libs/createExchangeRates'
+import getValueWithCommision from '@/assets/libs/getValueWithCommision'
 
 export const state = () => ({
   currencyPairs: [],
@@ -14,8 +15,6 @@ export const state = () => ({
 })
 
 export const getters = {
-  // getCurrentBaseCurrency: (state) => state.currentBaseCurrency,
-  // getCurrentQuoteCurrency: (state) => state.currentQuoteCurrency,
   getBaseCurrencies: (state) => [
     ...new Set(state.currencyPairs.map((item) => item.base_currency)),
   ],
@@ -53,22 +52,22 @@ export const actions = {
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
   calculateBaseCurrencies({ commit, getters }, value) {
+    const commission = getters.getCurrentCurrencyPairs?.commission
     let valueQuoteCurrency = +value * getters.getCurrentExchangeRate?.rate
+
     valueQuoteCurrency =
-      valueQuoteCurrency -
-        valueQuoteCurrency *
-          (getters.getCurrentCurrencyPairs?.commission / 100) || ''
+      getValueWithCommision(valueQuoteCurrency, commission) || ''
 
     commit('setValueBaseCurrency', value)
     commit('setValueQuoteCurrency', valueQuoteCurrency.toString())
   },
   calculateQuoteCurrencies({ commit, getters }, value) {
+    const commission = getters.getCurrentCurrencyPairs?.commission
+
     let valueBaseCurrency = +value / getters.getCurrentExchangeRate?.rate
 
     valueBaseCurrency =
-      valueBaseCurrency +
-        valueBaseCurrency *
-          (+getters.getCurrentCurrencyPairs?.commission / 100) || ''
+      getValueWithCommision(valueBaseCurrency, commission, 'to-base') || ''
 
     valueBaseCurrency = Math.ceil(valueBaseCurrency * 100) / 100
 
