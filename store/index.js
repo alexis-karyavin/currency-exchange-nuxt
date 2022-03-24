@@ -46,19 +46,19 @@ export const actions = {
     commit('setExchangeRates', exchangeRates)
   },
   initIntervalUpdate({ commit, dispatch, state }, time) {
-    console.log('init interval')
     const handlerUpdateId = setInterval(() => {
       dispatch('initCurrencyExchange')
       dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
     }, time)
+
     commit('setHandlerUpdate', handlerUpdateId)
   },
   destroyHandlerUpdate({ state }) {
-    console.log('destroy handlerUpdate', state.handlerUpdateId)
     clearInterval(state.handlerUpdateId)
   },
   reverseCurrency({ state, commit, dispatch }) {
     const tmp = state.currentBaseCurrency
+
     commit('setCurrentBaseCurrency', state.currentQuoteCurrency)
     commit('setCurrentQuoteCurrency', tmp)
 
@@ -70,6 +70,7 @@ export const actions = {
       commit('setValueBaseCurrency', 0)
       return
     }
+
     const commission = getters.getCurrentCurrencyPairs?.commission
     let valueQuoteCurrency = +value * getters.getCurrentExchangeRate?.rate
 
@@ -85,6 +86,7 @@ export const actions = {
       commit('setValueBaseCurrency', 0)
       return
     }
+
     const commission = getters.getCurrentCurrencyPairs?.commission
 
     let valueBaseCurrency = +value / getters.getCurrentExchangeRate?.rate
@@ -102,6 +104,7 @@ export const actions = {
       dispatch('reverseCurrency')
       return
     }
+
     commit('setCurrentBaseCurrency', value)
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
@@ -110,6 +113,7 @@ export const actions = {
       dispatch('reverseCurrency')
       return
     }
+
     commit('setCurrentQuoteCurrency', value)
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
