@@ -55,6 +55,7 @@ export default {
     return {
       imgArrow,
       showModalComplete: false,
+      timeUpdate: 30000,
     }
   },
   computed: {
@@ -75,6 +76,7 @@ export default {
   },
   created() {
     this.initCurrencyExchange()
+    this.initIntervalUpdate(this.timeUpdate)
   },
   methods: {
     ...mapActions([
@@ -84,13 +86,17 @@ export default {
       'calculateQuoteCurrencies',
       'changeBaseCurrencies',
       'changeQuoteCurrencies',
+      'destroyHandlerUpdate',
+      'initIntervalUpdate',
     ]),
     ...mapMutations(['setValueQuoteCurrency', 'setValueBaseCurrency']),
     exchange() {
       this.showModalComplete = true
+      this.destroyHandlerUpdate()
     },
     closeModalComplete() {
       this.showModalComplete = false
+      this.initIntervalUpdate(this.timeUpdate)
     },
   },
 }

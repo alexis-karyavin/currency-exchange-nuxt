@@ -12,6 +12,7 @@ export const state = () => ({
   currentQuoteCurrency: null,
   valueBaseCurrency: null,
   valueQuoteCurrency: null,
+  handlerUpdateId: null,
 })
 
 export const getters = {
@@ -37,12 +38,24 @@ export const getters = {
 }
 
 export const actions = {
-  initCurrencyExchange({ commit }) {
+  initCurrencyExchange({ commit, dispatch }) {
     const pairs = createPairs(currencies, commissions)
     const exchangeRates = createExchangeRates(pairs)
 
     commit('setPairs', pairs)
     commit('setExchangeRates', exchangeRates)
+  },
+  initIntervalUpdate({ commit, dispatch, state }, time) {
+    console.log('init interval')
+    const handlerUpdateId = setInterval(() => {
+      dispatch('initCurrencyExchange')
+      dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
+    }, time)
+    commit('setHandlerUpdate', handlerUpdateId)
+  },
+  destroyHandlerUpdate({ state }) {
+    console.log('destroy handlerUpdate', state.handlerUpdateId)
+    clearInterval(state.handlerUpdateId)
   },
   reverseCurrency({ state, commit, dispatch }) {
     const tmp = state.currentBaseCurrency
@@ -110,5 +123,8 @@ export const mutations = {
   },
   setValueQuoteCurrency(state, value) {
     state.valueQuoteCurrency = value
+  },
+  setHandlerUpdate(state, id) {
+    state.handlerUpdateId = id
   },
 }
