@@ -65,6 +65,11 @@ export const actions = {
     dispatch('calculateBaseCurrencies', state.valueBaseCurrency)
   },
   calculateBaseCurrencies({ commit, getters }, value) {
+    if (value === '0') {
+      commit('setValueQuoteCurrency', 0)
+      commit('setValueBaseCurrency', 0)
+      return
+    }
     const commission = getters.getCurrentCurrencyPairs?.commission
     let valueQuoteCurrency = +value * getters.getCurrentExchangeRate?.rate
 
@@ -75,6 +80,11 @@ export const actions = {
     commit('setValueQuoteCurrency', valueQuoteCurrency.toString())
   },
   calculateQuoteCurrencies({ commit, getters }, value) {
+    if (value === '0') {
+      commit('setValueQuoteCurrency', 0)
+      commit('setValueBaseCurrency', 0)
+      return
+    }
     const commission = getters.getCurrentCurrencyPairs?.commission
 
     let valueBaseCurrency = +value / getters.getCurrentExchangeRate?.rate
