@@ -7,7 +7,7 @@
         template(v-slot:header) Exchange {{ currentBaseCurrency }} to {{currentQuoteCurrency}}
         div.form-group
           label You pay
-          Input(
+          InputCurrencies(
             :currentCurrency="currentBaseCurrency"
             :currencies="baseCurrencies"
             :value="valueBaseCurrency"
@@ -19,7 +19,7 @@
             img.image-arrow(:src="imgArrow")
         div.form-group(v-if="quoteCurrencies.length")
           label You get
-          Input(
+          InputCurrencies(
             :currentCurrency="currentQuoteCurrency"
             :currencies="quoteCurrencies"
             :value="valueQuoteCurrency"
@@ -38,7 +38,7 @@
 import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 import TheNavBar from '@/components/TheNavBar.vue'
 import Card from '@/components/Card.vue'
-import Input from '@/components/Input.vue'
+import InputCurrencies from '@/components/InputCurrencies.vue'
 import Modal from '@/components/Modal.vue'
 
 import imgArrow from '@/assets/icons/arrows-couple.png'
@@ -48,7 +48,7 @@ export default {
   components: {
     TheNavBar,
     Card,
-    Input,
+    InputCurrencies,
     Modal,
   },
   data() {

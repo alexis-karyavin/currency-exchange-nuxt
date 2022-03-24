@@ -1,6 +1,6 @@
 <template lang="pug">
   div.wrapper-input-exchange
-    input(type="text" :value="value" @input="inputValue($event.target.value)")
+    input(type="text" :value="value" @input="inputValue")
     select(@change="changeSelect($event.target.value)")
       option(
         v-for="(currency, i) in currencies"
@@ -37,9 +37,11 @@ export default {
     changeSelect(value) {
       this.$emit('change-current-currency', value)
     },
-    inputValue(value) {
+    inputValue(e) {
+      let value = e.target.value
       value = !isNaN(+value) ? value : ''
       this.$emit('set-value', value)
+      e.target.value = value
     },
   },
 }
