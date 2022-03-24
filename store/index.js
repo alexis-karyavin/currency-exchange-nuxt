@@ -64,10 +64,13 @@ export const actions = {
   },
   calculateQuoteCurrencies({ commit, getters }, value) {
     let valueBaseCurrency = +value / getters.getCurrentExchangeRate?.rate
+
     valueBaseCurrency =
       valueBaseCurrency +
         valueBaseCurrency *
-          (getters.getCurrentCurrencyPairs?.commission / 100) || ''
+          (+getters.getCurrentCurrencyPairs?.commission / 100) || ''
+
+    valueBaseCurrency = Math.ceil(valueBaseCurrency * 100) / 100
 
     commit('setValueQuoteCurrency', value)
     commit('setValueBaseCurrency', valueBaseCurrency.toString())
